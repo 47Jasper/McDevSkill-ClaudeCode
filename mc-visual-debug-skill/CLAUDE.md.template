@@ -1,0 +1,88 @@
+# CLAUDE.md — Minecraft Plugin Dev with Tiered Visual Debugging
+
+## Project
+This is a Minecraft plugin project. Built with [Maven/Gradle].
+
+## Visual Debug Skill
+Located at: `~/mc-visual-debug-skill`
+
+**Before any build/test cycle, read the skill:**
+```
+cat ~/mc-visual-debug-skill/SKILL.md
+```
+
+## Two Scripts
+
+| Script | Purpose |
+|--------|---------|
+| `~/mc-visual-debug-skill/scripts/mc_helper.py` | Build, deploy, server, client, input |
+| `~/mc-visual-debug-skill/scripts/observe.py` | Tiered observation engine |
+
+## Build → Deploy → Restart
+
+```bash
+python ~/mc-visual-debug-skill/scripts/mc_helper.py full-cycle
+```
+
+Or manually:
+```bash
+python ~/mc-visual-debug-skill/scripts/mc_helper.py build
+python ~/mc-visual-debug-skill/scripts/mc_helper.py deploy
+python ~/mc-visual-debug-skill/scripts/mc_helper.py server-restart
+python ~/mc-visual-debug-skill/scripts/mc_helper.py server-wait-ready
+```
+
+## Launch Client (first time or if closed)
+```bash
+python ~/mc-visual-debug-skill/scripts/mc_helper.py client-launch
+```
+
+## Send In-Game Input
+```bash
+python ~/mc-visual-debug-skill/scripts/mc_helper.py chat "/your-command"
+python ~/mc-visual-debug-skill/scripts/mc_helper.py key "w" --duration 2
+python ~/mc-visual-debug-skill/scripts/mc_helper.py click 400 300
+```
+
+## Observe — Pick the Right Tier!
+
+**Always start at Tier 0 and escalate only if needed.**
+
+```bash
+# Tier 0 — Server logs (ALWAYS do this first, it's free)
+python ~/mc-visual-debug-skill/scripts/observe.py logs --tail 30
+
+# Tier 1 — Chat OCR (after /commands, reads chat text cheaply)
+python ~/mc-visual-debug-skill/scripts/observe.py chat-ocr
+
+# Tier 2 — Smart screenshot (only sends image if screen changed)
+python ~/mc-visual-debug-skill/scripts/observe.py screenshot
+
+# Tier 3 — Burst capture (for particles, spawns, transient effects)
+python ~/mc-visual-debug-skill/scripts/observe.py burst --frames 5 --duration 2
+
+# Tier 4 — Video keyframes (for animations, movement, complex sequences)
+python ~/mc-visual-debug-skill/scripts/observe.py record --duration 5
+```
+
+## Tier Selection Guide
+
+| Question to answer | Use tier |
+|---|---|
+| "Did the server throw an error?" | 0 (logs) |
+| "What did the /command respond?" | 1 (chat-ocr) |
+| "Did the GUI/world change?" | 2 (screenshot) |
+| "Did particles/entities appear briefly?" | 3 (burst) |
+| "Did the animation/movement work?" | 4 (record) |
+
+## Review Past Observations
+```bash
+python ~/mc-visual-debug-skill/scripts/observe.py buffer --last 10
+```
+
+## Testing Philosophy
+1. Always check logs first (Tier 0) — catches 60%+ of issues for free.
+2. Use chat OCR (Tier 1) before screenshots — 50 text tokens vs 250 image tokens.
+3. Only escalate to visual tiers when text can't answer the question.
+4. Wait 1-2 seconds between input and observation.
+5. Combine tier results: logs + chat + visual = full picture.

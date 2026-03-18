@@ -1,0 +1,94 @@
+# ============================================================
+# Minecraft Visual Debug — Configuration
+# ============================================================
+# Fill in YOUR paths below. Claude Code reads this file to
+# know where everything lives on your machine.
+# ============================================================
+
+# --- Platform ---
+# "windows", "mac", or "linux"
+platform: "windows"
+
+# --- Plugin Project ---
+project_dir: "C:/Users/YOU/projects/my-plugin"
+build_tool: "maven"          # "maven" or "gradle"
+# (Optional) Exact JAR name if auto-detection fails:
+# jar_name: "MyPlugin-1.0.jar"
+
+# --- Server ---
+server:
+  # Root directory of the Minecraft server
+  server_dir: "C:/Users/YOU/mc-server"
+
+  # Where plugin JARs go (usually <server_dir>/plugins)
+  plugins_dir: "C:/Users/YOU/mc-server/plugins"
+
+  # Server log file (latest.log)
+  log_file: "C:/Users/YOU/mc-server/logs/latest.log"
+
+  # ---- MCSS (MC Server Soft) ----
+  # If you use MCSS to manage your server, fill these in.
+  mcss_path: ""
+  mcss_server_name: ""
+  mcss_api_port: 25560
+  mcss_api_key: ""
+
+  # ---- Direct Server Management (fallback if MCSS not configured) ----
+  jar_path: "C:/Users/YOU/mc-server/paper.jar"
+  jvm_args: "-Xmx4G -Xms2G"
+  # "tmux", "screen", or "subprocess" (Windows uses subprocess)
+  session_manager: "subprocess"
+  session_name: "mcserver"
+
+# --- Client / Launcher ---
+client:
+  # "multimc", "prism", or "official"
+  launcher: "prism"
+  launcher_path: "C:/Program Files/PrismLauncher/prismlauncher.exe"
+  instance_name: "DevTest"
+
+  # Window title substring to find the Minecraft window
+  window_title: "Minecraft"
+
+# --- Observation Engine ---
+observation:
+  # Where observation frames and buffer are stored
+  obs_dir: ""                  # Leave blank for auto (/tmp/mc_obs or %TEMP%/mc_obs)
+
+  # Delay before capture (lets frames render after input)
+  capture_delay: 0.5
+
+  # --- Tier 2: Smart Screenshot ---
+  # Perceptual hash diff threshold (0-100). Changes below this % are ignored.
+  # Higher = more tolerant of minor changes (clouds, mob movement).
+  # 8-12 is good for most cases. Raise to 15-20 if outdoors with weather.
+  diff_threshold: 10
+
+  # --- Tier 1: Chat OCR ---
+  # Fraction of screen height to crop from the bottom for the chat area.
+  # 0.22 = bottom 22% of the screen. Adjust if your GUI scale is unusual.
+  chat_crop_ratio: 0.22
+
+  # EasyOCR languages (English by default)
+  ocr_languages: ["en"]
+
+  # --- Tier 3: Burst Capture ---
+  burst_default_frames: 5
+  burst_default_duration: 2.0
+
+  # --- Tier 4: Video Recording ---
+  # ffmpeg path (leave blank to use system ffmpeg)
+  ffmpeg_path: ""
+  # Capture framerate for video recording
+  record_fps: 10
+  # Scene change threshold for keyframe extraction (0.0-1.0, lower = more sensitive)
+  scene_threshold: 0.3
+
+  # --- Buffer ---
+  # Max observations to keep in the rolling buffer
+  buffer_max_entries: 50
+
+# --- Gameplay Defaults ---
+gameplay:
+  server_address: "localhost"
+  server_port: 25565
